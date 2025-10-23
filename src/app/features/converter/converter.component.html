@@ -1,0 +1,61 @@
+<div class="converter" [formGroup]="form">
+    <h2>Convertisseur EUR / USD</h2>
+  
+    <div class="rate-display">
+      <p>
+        <strong>Taux actuel :</strong> {{ realRate() | number:'1.3-3' }}
+        <span *ngIf="fixedRate()"> | Taux fixe : {{ fixedRate() }}</span>
+      </p>
+    </div>
+  
+    <div class="input-group">
+      <label>Montant :</label>
+      <input type="number" formControlName="amount" min="0" />
+    </div>
+  
+    <div class="switch-group">
+      <label>Mode : </label>
+      <button type="button" (click)="switchMode()">
+        {{ form.get('mode')?.value === 'EUR' ? 'EUR → USD' : 'USD → EUR' }}
+      </button>
+    </div>
+  
+    <div class="result">
+      <p *ngIf="converted() !== null">
+        Résultat : 
+        <strong>{{ converted() }}</strong>
+        {{ form.get('mode')?.value === 'EUR' ? 'USD' : 'EUR' }}
+      </p>
+    </div>
+  
+    <div class="custom-rate">
+      <label for="customRate">Taux fixe :</label>
+      <input type="number" formControlName="customRate" placeholder="Ex: 1.12" />
+      <button type="button" (click)="setFixedRate()">Fixer</button>
+    </div>
+  
+    <div class="actions">
+      <button type="button" (click)="convert()">Convertir</button>
+    </div>
+  
+    <h3>Historique (5 dernières conversions)</h3>
+    <table *ngIf="history().length > 0">
+      <thead>
+        <tr>
+          <th>Taux réel</th>
+          <th>Taux saisi</th>
+          <th>Entrée</th>
+          <th>Sortie</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let h of history()">
+          <td>{{ h.realRate | number:'1.3-3' }}</td>
+          <td>{{ h.fixedRate ?? '-' }}</td>
+          <td>{{ h.inputValue }} {{ h.inputCurrency }}</td>
+          <td>{{ h.outputValue }} {{ h.outputCurrency }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
